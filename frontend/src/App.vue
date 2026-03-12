@@ -1,24 +1,22 @@
 <script setup lang="ts">
-import FormularioMatricula from './components/FormularioMatricula.vue'
+import SideMenu from './components/SideMenu.vue'
+
 </script>
 
 <template>
+  <main class="main">
 
+    <SideMenu />
 
-  <div class="container">
-    <FormularioMatricula />
-  </div>
+    <div>
+      <router-view />
+    </div>
+
+  </main>
 </template>
 
 <style scoped>
-
-.container {
-  background-image: url('https://t3.ftcdn.net/jpg/02/10/55/60/360_F_210556027_pNmg4EUFwrn2W25SDdWayPakVIztTSe8.jpg');
-  background-size: cover;
-  background-position: center;
+.main {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
 }
 </style>

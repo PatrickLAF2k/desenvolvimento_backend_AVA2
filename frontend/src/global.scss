@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+//ligth mode
+$primary: #26e3df;
+$secondary: #7c8fee;
+$accent: #5051e8;
+$text-dark: #1e293b;
+$text-light: #363e3f;
+$bg: #f5f5f5;
+
+//dark mode
+$darkMode-primary: #1cd9d6;
+$darkMode-secondary: #112483;
+$darkMode-accent: #1717b0;
+$darkMode-text: #f2fcfd;
+$darkMode-bg: #010809;
+
+$success: #13d813;
+$danger: #ef4444;
+
+body {
+  background-color: $bg;
+  color: #1e293b;
+}
+
+// Definindo o Mixin
+@mixin btnHoverEffect {
+  transition: 0.3s ease-in-out;
+
+  &:hover {
+    background-color: $primary;
+    color: white;
+    cursor: pointer;
+  }
+}
