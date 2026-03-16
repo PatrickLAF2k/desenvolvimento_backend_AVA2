@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-
 import { usuario } from "../../types";
 import UsuarioModel from "../../models/UsuarioModel";
 import { gerarToken } from "../../utils/auth";
@@ -29,6 +28,6 @@ export async function login(req: Request<{}, {}, usuario>, res: Response) {
 
 
     } catch (error) {
-        res.status(500).json({ message: "Erro ao cadastrar usuário." })
+        res.status(500).json({ message: "Erro interno do sistema." })
     }
 }
