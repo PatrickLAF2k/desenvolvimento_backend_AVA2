@@ -9,7 +9,14 @@ class UsuarioModel extends Model<usuario, UsuarioCreationAttributes> implements 
     public nome!: string;
     public email!: string;
     public senha!: string;
-    public tipo!: string;
+    public tipo!: "paciente" | "admin";
+    public telefone!: string;
+    public cep!: string;
+    public rua!: string;
+    public bairro!: string;
+    public cidade!: string;
+    public uf!: string;
+
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -37,6 +44,30 @@ UsuarioModel.init(
         tipo: {
             type: DataTypes.STRING,
             defaultValue: "paciente",
+        },
+        telefone: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        cep: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        rua: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        bairro: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        cidade: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        uf: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
     },
     {
