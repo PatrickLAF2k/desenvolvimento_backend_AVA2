@@ -2,8 +2,16 @@ export interface usuario {
   id?: string;
   nome: string;
   email: string;
-  senha: string;
-  tipo?: string;
+  senha?: string;
+  telefone: string;
+  tipo: 'admin' | 'paciente';
+  cep: string;
+  rua: string;
+  bairro: string;
+  cidade: string;
+  uf: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface medico {
