@@ -44,3 +44,72 @@ body {
     cursor: pointer;
   }
 }
+
+@mixin inputFocusEffect {
+  outline: none;
+  border: 1px solid #d1d5db;
+  transition: all 0.3s ease-in-out;
+w
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 4px rgba($primary, 0.1);
+    background-color: white;
+  }
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    outline: none;
+
+    &:focus {
+      border-color: #3498db; // Cor de foco padrão
+    }
+  }
+
+  // ESTADO DE ERRO REUTILIZÁVEL
+  &.has-error {
+    input {
+      border-color: #ef4444; // Vermelho
+      background-color: #fffafb; // Leve fundo avermelhado opcional
+
+      &:focus {
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+      }
+    }
+
+    label {
+      color: #ef4444;
+    }
+
+    .erroMensagem {
+      color: #ef4444;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-top: 4px;
+      display: block;
+      // Adiciona uma pequena animação de entrada
+      animation: fadeIn 0.3s ease-in;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
