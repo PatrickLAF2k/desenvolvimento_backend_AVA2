@@ -1,6 +1,5 @@
-export interface Curso {
-    id: number
-    nome: string
-    cpf: string
-    telefone: string
+export interface Login {
+    email: string
+    senha: string
+    token?: string
 }
