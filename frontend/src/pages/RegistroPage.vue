@@ -223,15 +223,6 @@ const { buscarEndereco, isBuscandoCep } = useCep(form);
         }
     }
 
-    .mensagemRetorno{
-        color: green;
-        font-size: 1rem;
-        padding: 1px
-    }
-    .mensagemRetornoErro{
-        color: red;
-        font-size: 1rem;
-        padding: 1px
-    }
+    
 }
 </style>

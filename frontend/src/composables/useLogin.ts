@@ -1,64 +1,61 @@
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
 import { z } from 'zod';
-import { type Login } from '@/types';
-const API_URL = import.meta.env.VITE_API_URL;
+import { type Login } from '../types';
+import { useAuth } from './useAuth';
+import api from '../services/api';
+import { buscarPrevisaoCompleta } from '../services/clima';
 
 const loginSchema = z.object({
-    email: z.email("E-mail inválido"),
-    senha: z.string()
-        .min(1, "A senha é obrigatória")
-        .max(10, "A senha deve ter no máximo 10  caracteres")
+    email: z.string().email("E-mail inválido"),
+    senha: z.string().min(1, "A senha é obrigatória").max(10, "A max 10")
 });
-
 
 export function useLogin() {
     const router = useRouter();
+
+    const { salvarToken } = useAuth();
 
     const isLoading = ref(false);
 
     const erros = reactive<Record<string, string>>({});
 
-    const form = reactive<Login>({
-        email: '',
-        senha: ''
-    });
+    const form = reactive<Login>({ email: '', senha: '' });
 
     async function realizarLogin() {
         isLoading.value = true;
-
         Object.keys(erros).forEach(key => delete erros[key]);
 
         const validacao = loginSchema.safeParse(form);
 
         if (!validacao.success) {
-            validacao.error.issues.forEach(err => {
-                const campo = err.path[0] as string;
-                erros[campo] = err.message;
-            });
+            validacao.error.issues.forEach(err => { erros[err.path[0] as string] = err.message; });
             isLoading.value = false;
             return;
         }
 
         try {
-            const response = await axios.post(`${API_URL}/login`, form);
+            const response = await api.post('/login', form);
+            const { token, tipo } = response.data;
+            salvarToken(token);
 
-            const token = response.data.token;
 
-            localStorage.setItem('token', token);
+            try {
+                const listaClima = await buscarPrevisaoCompleta();
 
-            router.push('/dashboard');
+                if (listaClima && listaClima.length > 0) {
+                    localStorage.setItem('previsao_clima', JSON.stringify(listaClima));
+                }
+            } catch (e) {
+
+                console.log("Erro silencioso no clima (não trava o login)");
+
+            }
+
+            router.push(tipo == 'admin' ? '/dashboardAdmin' : '/dashboardPaciente');
 
         } catch (error: any) {
-
-            if (error.response && error.response.data) {
-
-                erros.geral = error.response.data.message;
-
-            } else {
-                erros.geral = "Erro ao conectar com o servidor.";
-            }
+            erros.geral = error.response?.data?.message || "Erro ao conectar com o servidor.";
         } finally {
             isLoading.value = false;
         }

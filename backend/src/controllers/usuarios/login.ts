@@ -23,6 +23,7 @@ export async function login(req: Request<{}, {}, usuario>, res: Response) {
 
         return res.status(200).header("Authorization", `Bearer ${token}`).json({
             token,
+            tipo: usuarioExistente.tipo
         });
 
 

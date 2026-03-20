@@ -27,7 +27,7 @@ export async function cadastro(req: Request<{}, {}, usuario>, res: Response) {
             nome,
             email,
             senha: senhaHash,
-            tipo: "admin",
+            tipo: "paciente",
             telefone,
             cep,
             rua,

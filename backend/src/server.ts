@@ -6,7 +6,7 @@ import { sequelize } from "./database";
 import "./models/UsuarioModel";
 import "./models/MedicoModel";
 import "./models/AgendamentoModel";
-import "./models/associations";
+import "./models/Associations";
 
 
 const app = express();

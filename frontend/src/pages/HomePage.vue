@@ -29,7 +29,7 @@ const { form, erros, isLoading, realizarLogin } = useLogin();
                     <div class="inputWrapper">
                         <input type="email" v-model="form.email" placeholder="seu@email.com" />
                     </div>
-                    <span class="erroMensagem" v-if="erros.email">{{ erros.email }}</span>
+                    <h3 class="erroMensagem" v-if="erros.email">{{ erros.email }}</h3>
                 </div>
 
                 <div class="inputGroup" :class="{ 'has-error': erros.senha }">
@@ -37,12 +37,10 @@ const { form, erros, isLoading, realizarLogin } = useLogin();
                     <div class="inputWrapper">
                         <input type="password" v-model="form.senha" placeholder="••••••••" />
                     </div>
-                    <span class="erroMensagem" v-if="erros.senha">{{ erros.senha }}</span>
+                    <h3 class="erroMensagem" v-if="erros.senha">{{ erros.senha }}</h3>
                 </div>
 
-                <p class="erroMensagem centralizado" v-if="erros.geral">
-                    {{ erros.geral }}
-                </p>
+                <p v-if="erros.geral" class="mensagemRetornoErro">{{ erros.geral }}</p>
 
                 <button type="submit" class="btnPrincipal" :disabled="isLoading">
                     <Icon v-if="!isLoading" icon="material-symbols-light:login" width="24" height="24" />
@@ -124,26 +122,26 @@ const { form, erros, isLoading, realizarLogin } = useLogin();
     flex-direction: column;
     gap: 1.5rem;
 
-    .inputGroup {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+    // .inputGroup {
+    //     display: flex;
+    //     flex-direction: column;
+    //     gap: 0.5rem;
 
-        label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #475569;
-        }
+    //     label {
+    //         font-size: 0.85rem;
+    //         font-weight: 600;
+    //         color: #475569;
+    //     }
 
-        input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
-            background: #fdfdfd;
-            border: 1px solid #e2e8f0;
-            @include inputFocusEffect; // Seu mixin de foco
-        }
-    }
+    //     input {
+    //         width: 100%;
+    //         padding: 0.8rem 1rem;
+    //         border-radius: 8px;
+    //         background: #fdfdfd;;
+    //         border: 1px solid #e2e8f0;
+    //         @include inputFocusEffect; // Seu mixin de foco
+    //     }
+    // }
 
     .btnPrincipal {
         display: flex;
