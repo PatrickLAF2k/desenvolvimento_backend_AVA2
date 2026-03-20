@@ -10,10 +10,10 @@ export async function login(req: Request<{}, {}, usuario>, res: Response) {
 
         const usuarioExistente = await UsuarioModel.findOne({ where: { email } }) as any;
 
-        if (!usuarioExistente) {
+        if (!usuarioExistente || !usuarioExistente.senha) {
             return res.status(400).json({ message: "Email ou senha invalidos." });
         }
-        const senhaValida = bcrypt.compareSync(senha, usuarioExistente.senha);
+        const senhaValida = bcrypt.compareSync(senha as string, usuarioExistente.senha as string);
 
         if (!senhaValida) {
             return res.status(400).json({ message: "Email ou senha invalidos." });

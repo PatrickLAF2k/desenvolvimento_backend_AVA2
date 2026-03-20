@@ -5,28 +5,25 @@ import AgendamentoModel from "../../models/AgendamentoModel";
 
 export async function prepararAgendamento(req: Request, res: Response) {
     try {
-        // 1. Pegar a data de hoje no formato YYYY-MM-DD para o filtro
+
         const hoje = new Date().toISOString().split('T')[0];
 
-        // 2. Buscar médicos e agendamentos em paralelo (mais rápido)
         const [medicos, agendamentosOcupados] = await Promise.all([
-            // Busca médicos para o seu Select
             MedicoModel.findAll({
                 attributes: ['id', 'nome', 'especialidade'],
                 order: [['nome', 'ASC']]
             }),
 
-            // Busca apenas o essencial das consultas futuras para bloquear o grid
             AgendamentoModel.findAll({
                 where: {
-                    data: { [Op.gte]: hoje }, // Consultas de hoje para frente
-                    status: { [Op.in]: ['agendada', 'confirmada'] } // Ignora as canceladas
+                    data: { [Op.gte]: hoje },
+                    status: { [Op.in]: ['agendada', 'confirmada'] } 
                 },
                 attributes: ['id_medico', 'data', 'hora']
             })
         ]);
 
-        // 3. Retornar os dados estruturados para o Frontend
+       
         return res.status(200).json({
             medicos,
             agendamentosOcupados

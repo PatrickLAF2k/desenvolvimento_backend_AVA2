@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
 import AgendamentoModel from "../../models/AgendamentoModel";
 import UsuarioModel from "../../models/UsuarioModel";
-import MedicoModel from "../../models/MedicoModel"; // Importe o MedicoModel
+import MedicoModel from "../../models/MedicoModel"; 
 import { Op } from "sequelize";
 
 export async function getStatsPaciente(req: Request, res: Response) {
-    // 1. Pegar o ID do usuário vindo do token decodificado pelo middleware
+
     const usuarioLogado = (req as any).usuarioLogado;
     const id_usuario = usuarioLogado?.id;
 
     console.log("ID recuperado do token:", id_usuario);
 
     try {
-        // 2. Buscar o nome do usuário para o cabeçalho
+        
         const usuario = await UsuarioModel.findByPk(id_usuario, {
             attributes: ['nome']
         });
@@ -21,24 +21,23 @@ export async function getStatsPaciente(req: Request, res: Response) {
             return res.status(404).json({ message: "Usuário não encontrado no banco." });
         }
 
-        // 3. Buscar estatísticas e a lista de consultas em paralelo
-        // Usamos id_usuario conforme definido na sua associação
+     
         const [consultasConcluidas, proximasConsultas] = await Promise.all([
             AgendamentoModel.count({
                 where: {
-                    id_usuario: id_usuario, // Corrigido: usando id_usuario
+                    id_usuario: id_usuario, 
                     status: 'concluida'
                 }
             }),
 
             AgendamentoModel.findAll({
                 where: {
-                    id_usuario: id_usuario, // Corrigido: usando id_usuario
+                    id_usuario: id_usuario, 
                 },
                 attributes: ['id', 'data', 'hora', 'status'],
                 include: [
                     {
-                        model: MedicoModel, // Usando o MedicoModel conforme sua associação
+                        model: MedicoModel, 
                         as: 'medico',
                         attributes: ['nome', 'especialidade']
                     }
@@ -47,7 +46,7 @@ export async function getStatsPaciente(req: Request, res: Response) {
             })
         ]);
 
-        // 4. Formatar para o padrão que o seu Front-end espera (camelCase ou nomes específicos)
+    
         const proximasConsultasFormatadas = proximasConsultas.map((consulta: any) => ({
             id: consulta.id,
             nome: consulta.medico?.nome || 'Médico não identificado',
@@ -57,7 +56,7 @@ export async function getStatsPaciente(req: Request, res: Response) {
             status: consulta.status
         }));
 
-        // Retorno final para o Dash do Paciente
+
         return res.json({
             nome: usuario.nome,
             consultasConcluidas,
