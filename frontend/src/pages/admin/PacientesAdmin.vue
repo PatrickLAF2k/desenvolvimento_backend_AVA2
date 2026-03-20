@@ -10,7 +10,7 @@ const { verificarAcesso } = useAuth();
 
 const { showElements } = useStaggerRender(2, 150);
 const busca = ref('');
-const { perfil, buscarPerfil } = usePerfil();
+const { buscarPerfil } = usePerfil();
 
 const dadosPacientes = ref([
     {
