@@ -32,7 +32,12 @@ onMounted(async () => {
 
 // Formata a data para o padrão do banco (YYYY-MM-DD) para a verificação
 const dataFormatadaISO = computed(() => {
-    return minhaData.value.toISOString().split('T')[0];
+    if (!minhaData.value) return '';
+    // Evita o bug de fuso horário do toISOString() no Brasil (GMT-3)
+    const ano = minhaData.value.getFullYear();
+    const mes = String(minhaData.value.getMonth() + 1).padStart(2, '0');
+    const dia = String(minhaData.value.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
 });
 
 // Lista de horários disponíveis no sistema
@@ -50,8 +55,18 @@ const listaHorarios = computed(() => {
 });
 
 const selecionarHorario = (hora: string) => {
-    // Só permite selecionar se não estiver ocupado
-    if (!isHorarioOcupado(medicoSelecionado.value?.id, dataFormatadaISO.value, hora)) {
+    // 1. Pegamos o ID de forma segura
+    const idMedico = medicoSelecionado.value?.id;
+
+    // 2. Se não houver médico selecionado, paramos a execução aqui
+    // Isso garante para o TypeScript que, abaixo desta linha, o ID é um NUMBER
+    if (!idMedico) {
+        alert("Por favor, selecione um médico antes de escolher o horário.");
+        return;
+    }
+
+    // 3. Agora passamos o idMedico (que o TS já sabe que existe)
+    if (!isHorarioOcupado(idMedico, dataFormatadaISO.value, hora)) {
         horarioSelecionado.value = hora;
     }
 };
@@ -64,9 +79,13 @@ const finalizarAgendamento = async () => {
 
     // Prepara o payload para o Back-end
     // Nota: enviamos a data como DD/MM/YYYY pois seu controller usa .split("/")
+    const dia = String(minhaData.value.getDate()).padStart(2, '0');
+    const mes = String(minhaData.value.getMonth() + 1).padStart(2, '0');
+    const ano = minhaData.value.getFullYear();
+
     const payload = {
         id_medico: medicoSelecionado.value.id,
-        data: minhaData.value.toLocaleDateString('pt-BR'),
+        data: `${dia}/${mes}/${ano}`,
         hora: horarioSelecionado.value,
         status: 'agendada',
         observacao: observacoes.value
@@ -97,7 +116,7 @@ const finalizarAgendamento = async () => {
         <div class="gridContainer">
             <section class="colunaEsquerda">
                 <transition name="stagger">
-                    <div class="secaoDatas">
+                    <div v-if="showElements[1]" class="secaoDatas">
                         <h2>
                             <span>
                                 <Icon class="icon" icon="solar:calendar-add-bold-duotone" />
@@ -109,7 +128,7 @@ const finalizarAgendamento = async () => {
                 </transition>
 
                 <transition name="stagger">
-                    <div class="secaoHorarios">
+                    <div v-if="showElements[2]" class="secaoHorarios">
                         <h2 class="titulo-horario">
                             <span class="icon-bg">
                                 <Icon icon="iconamoon:clock-duotone" />
@@ -118,11 +137,11 @@ const finalizarAgendamento = async () => {
                         </h2>
                         <div class="grid-horarios">
                             <button v-for="hora in listaHorarios" :key="hora" type="button"
-                                :disabled="isHorarioOcupado(medicoSelecionado?.id, dataFormatadaISO, hora)" :class="[
+                                :disabled="!medicoSelecionado || isHorarioOcupado(medicoSelecionado.id, dataFormatadaISO, hora)" :class="[
                                     'card-hora',
                                     {
                                         'selecionado': horarioSelecionado === hora,
-                                        'ocupado': isHorarioOcupado(medicoSelecionado?.id, dataFormatadaISO, hora)
+                                        'ocupado': medicoSelecionado && isHorarioOcupado(medicoSelecionado.id, dataFormatadaISO, hora)
                                     }
                                 ]" @click="selecionarHorario(hora)">
                                 {{ hora }}
@@ -134,7 +153,7 @@ const finalizarAgendamento = async () => {
 
             <section class="colunaDireita">
                 <transition name="stagger">
-                    <div class="secaoMedicos">
+                    <div v-if="showElements[1]" class="secaoMedicos">
                         <h2 class="txtMedio">
                             <span>
                                 <Icon icon="fluent-mdl2:medical" />
@@ -169,7 +188,7 @@ const finalizarAgendamento = async () => {
                 </transition>
 
                 <transition name="stagger">
-                    <button class="btnFinalizar" :disabled="enviando" @click="finalizarAgendamento">
+                    <button v-if="showElements[3]" class="btnFinalizar" :disabled="enviando" @click="finalizarAgendamento">
                         <template v-if="!enviando">
                             Confirmar Agendamento
                             <Icon icon="solar:check-read-bold" />
