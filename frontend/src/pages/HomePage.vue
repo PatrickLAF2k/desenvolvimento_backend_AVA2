@@ -19,7 +19,9 @@ const { form, erros, isLoading, realizarLogin } = useLogin();
 
             <header class="headerCard">
                 <h2>Bem-vindo de volta</h2>
-                <p>Insira suas credenciais para acessar o painel</p>
+                <p>Login para conta admin</p>
+                <p>admin@email.com</p>
+                <p>12345678</p>
             </header>
 
             <form class="formLogin" @submit.prevent="realizarLogin">
